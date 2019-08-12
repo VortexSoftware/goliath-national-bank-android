@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="300dp"
+              android:layout_height="wrap_content"
+              android:background="@color/colorPrimary"
+              android:layout_weight="0"
+              android:padding="@dimen/distance"
+              android:layout_margin="50dp">
+
+    <TextView
+            tools:text="SKU: 00001"
+            style="@style/textTitle"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_sku_title" android:layout_weight="0"/>
+
+    <include android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginEnd="@dimen/distance_items"
+             android:layout_marginStart="@dimen/distance_items"
+             android:layout_marginTop="@dimen/distance"
+             layout="@layout/listitem_transaction"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/distance_items"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:layoutAnimation="@anim/layout_animation_fall_down"
+            android:id="@+id/recyclerViewTransactions"/>
+    <TextView
+            android:layout_marginTop="@dimen/distance"
+
+            tools:text="Total: 541 EUR"
+            style="@style/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewTotal" android:textAlignment="textEnd"/>
+    <Button
+            android:layout_marginTop="@dimen/distance"
+            android:text="@string/close"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_close"
+            style="@android:style/Widget.Material.Button.Colored"/>
+</LinearLayout>
