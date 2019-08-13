@@ -1,9 +1,11 @@
 package com.example.internationalbusinessmen
 
 import com.example.internationalbusinessmen.Model.Conversion
+import com.example.internationalbusinessmen.Model.Transaction
 import org.junit.Test
 
 import org.junit.Assert.*
+import java.math.BigDecimal
 
 class TransactionHandlerTests {
 
@@ -26,16 +28,18 @@ class TransactionHandlerTests {
 
         conv.generateRates()
 
-       // conv.
 
         return conv
     }
 
-    fun initializeTransaction(): TransactionHandler{
+    fun initializeTransaction(): TransactionHandler {
 
         var transactionHandler = TransactionHandler()
 
-        DataHandler.generateData(transactionHandler,"[{\"sku\":\"Y1903\",\"amount\":\"50.5\",\"currency\":\"AUD\"},{\"sku\":\"D9255\",\"amount\":\"32.9\",\"currency\":\"AUD\"},{\"sku\":\"Y1903\",\"amount\":\"1000\",\"currency\":\"EUR\"}]")
+        transactionHandler.addTransaction(Transaction("Y1903", BigDecimal("50.5"), "AUD"))
+        transactionHandler.addTransaction(Transaction("Y1902", BigDecimal("50.5"), "EUR"))
+        transactionHandler.addTransaction(Transaction("Y1903", BigDecimal("500.5"), "USD"))
+
 
         return transactionHandler
 
@@ -48,13 +52,14 @@ class TransactionHandlerTests {
 
         var transactions = initializeTransaction()
 
-        var transactionFiltered = transactions.getTransactionsInRate("Y1903","EUR",converter)
+        var transactionFiltered = transactions.getTransactionsInRateTest("Y1903", "EUR", converter)
 
 
-        assertEquals("[Transaction(sku='Y1903', amount=50.5, currency='AUD'), Transaction(sku='Y1903', amount=1000.0, currency='EUR'), Transaction(sku='Total', amount=1505.0, currency='EUR')]", transactionFiltered.toString())
-
+        assertEquals(
+            "[Transaction(sku='Y1903', amount=50.5, currency='AUD'), Transaction(sku='Y1903', amount=1000.0, currency='EUR'), Transaction(sku='Total', amount=1505.0, currency='EUR')]",
+            transactionFiltered.toString()
+        )
 
     }
-
 
 }
