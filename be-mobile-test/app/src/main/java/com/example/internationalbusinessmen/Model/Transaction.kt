@@ -21,4 +21,3 @@ class Transaction {
 
 }
 
-//[{"sku":"D9255","amount":"31.2","currency":"AUD"}

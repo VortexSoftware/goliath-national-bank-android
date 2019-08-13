@@ -6,18 +6,20 @@ import com.example.internationalbusinessmen.Model.Transaction
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
-import java.net.URL
+import java.math.BigDecimal
+
 
 class DataHandler() {
 
     val liveDataRateConverter: MutableLiveData<RateConverter> = MutableLiveData()
     val liveDataTrasactionHandler: MutableLiveData<TransactionHandler> = MutableLiveData()
 
-
     fun downloadData(
-         trasactionsUrl: String,
+        trasactionsUrl: String,
         ratesUrl: String
     ) {
         val rates = RateConverter()
@@ -37,36 +39,52 @@ class DataHandler() {
         }
     }
 
+    fun downloadJson(url: String): String? {
+
+        val request = Request.Builder()
+            .addHeader("Accept", "application/json")
+            .url(url)
+            .build()
+
+        return OkHttpClient().newCall(request).execute().body?.string()
+
+    }
+
     fun downloadSync(rates: RateConverter, url: String) {
 
-        val s: String = URL(url).readText()
+        var s = downloadJson(url)
 
-        val gsons = s.substring(1, s.length - 1).split("},")
+        val gsons = s?.substring(1, s.length-2)?.split("},")
 
-        for (gson in gsons) {
-            try {
+        if (gsons != null) {
+            for (gson in gsons) {
+                try {
 
-                rates.addConversion(Gson().fromJson(gson.plus("}"), Conversion::class.java))
+                    rates.addConversion(Gson().fromJson(gson.plus("}"), Conversion::class.java))
 
-            } catch (e: JsonSyntaxException) {
-                print(e.cause)
+                } catch (e: JsonSyntaxException) {
+                    print(e.cause)
+                }
             }
         }
 
     }
 
     fun downloadSync(trasactions: TransactionHandler, url: String) {
-        val s: String = URL(url).readText()
 
-        val gsons = s.substring(1, s.length - 1).split("},")
+        val s = downloadJson(url)
 
-        for (gson in gsons) {
-            try {
+        val gsons = s?.substring(1, s.length-2)?.split("},")
 
-                trasactions.addTransaction(Gson().fromJson(gson.plus("}"), Transaction::class.java))
+        if (gsons != null) {
+            for (gson in gsons) {
+                try {
 
-            } catch (e: JsonSyntaxException) {
-                print(e.cause)
+                    trasactions.addTransaction(Gson().fromJson(gson.plus("}"), Transaction::class.java))
+
+                } catch (e: JsonSyntaxException) {
+                    print(e.cause)
+                }
             }
         }
 
@@ -84,4 +102,7 @@ class DataHandler() {
 
         }
     }
+
+
 }
+

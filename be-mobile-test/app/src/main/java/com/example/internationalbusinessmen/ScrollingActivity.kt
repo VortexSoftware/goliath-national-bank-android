@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
+import com.ethanhua.skeleton.Skeleton
 import com.example.internationalbusinessmen.Adapters.AdapterItems
 import com.example.internationalbusinessmen.Dialogs.DialogTransactions
 import com.example.internationalbusinessmen.Model.Transaction
@@ -23,14 +25,14 @@ class ScrollingActivity : AppCompatActivity() {
     var bundle = Bundle()
     var fragmentTransaction = supportFragmentManager.beginTransaction()
     var priorInstance = supportFragmentManager.findFragmentByTag("transaction")
-    var adapterItems = AdapterItems(ArrayList(),this)
+    var adapterItems = AdapterItems(ArrayList(), this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(toolbar)
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Created by VORTEX SOFTWARE - 2019", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, getString(R.string.about), Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
 
@@ -44,17 +46,22 @@ class ScrollingActivity : AppCompatActivity() {
 
         SuscribeTransactions(bankVM.dataHandler)
 
-        SubscribeToVM(bankVM)
-
-        SubscribeAdapter(adapterItems)
-
-        bankVM.downloadData(urlTransactions,urlRates)
-
         recyclerTransactions.layoutManager = LinearLayoutManager(this)
 
         recyclerTransactions.layoutManager = GridLayoutManager(this, 2)
 
         recyclerTransactions.adapter = adapterItems
+
+        var skeletonScreen = Skeleton.bind(recyclerTransactions).adapter(adapterItems).count(20).show()
+
+        SubscribeToVM(bankVM,skeletonScreen)
+
+        SubscribeAdapter(adapterItems)
+
+        bankVM.downloadData(urlTransactions, urlRates)
+
+
+
 
     }
 
@@ -72,9 +79,12 @@ class ScrollingActivity : AppCompatActivity() {
     }
 
 
-    fun downloadFinished(transactionHandler: TransactionHandler) {
+    fun downloadFinished(
+        transactionHandler: TransactionHandler,
+        skeletonScreen: RecyclerViewSkeletonScreen
+    ) {
 
-        if(!layoutDownloading.visibility.equals(View.GONE)){
+        if (!layoutDownloading.visibility.equals(View.GONE)) {
             textView_downloading.text = getString(R.string.done)
 
 
@@ -97,22 +107,27 @@ class ScrollingActivity : AppCompatActivity() {
 
                     layoutDownloading.visibility = View.GONE
 
+
                 }
             })
 
         }
 
-        adapterItems.refreshData(transactionHandler.getItemsList())
+        skeletonScreen.hide()
 
+        adapterItems.refreshData(transactionHandler.getItemsList())
 
     }
 
 
-    private fun SubscribeToVM(viewModel: BankVM) {
+    private fun SubscribeToVM(
+        viewModel: BankVM,
+        skeletonScreen: RecyclerViewSkeletonScreen
+    ) {
 
         val transactionObserver = Observer<TransactionHandler> {
 
-            downloadFinished(it)
+            downloadFinished(it,skeletonScreen)
 
         }
         viewModel.liveDataTransaction.observe(this, transactionObserver)
@@ -127,7 +142,6 @@ class ScrollingActivity : AppCompatActivity() {
         }
         adapter.liveDataItemSku.observe(this, itemClick)
     }
-
 
 
     private fun SuscribeDialog(transactionHandler: TransactionHandler) {
@@ -159,7 +173,7 @@ class ScrollingActivity : AppCompatActivity() {
             bankVM.updateRates(it)
 
         }
-        dataHandler.liveDataRateConverter.observe(this,suscribeRates)
+        dataHandler.liveDataRateConverter.observe(this, suscribeRates)
     }
 
     private fun SuscribeTransactions(dataHandler: DataHandler) {
@@ -169,7 +183,7 @@ class ScrollingActivity : AppCompatActivity() {
             bankVM.updateTransactions(it)
 
         }
-        dataHandler.liveDataTrasactionHandler.observe(this,suscribeTransactions)
+        dataHandler.liveDataTrasactionHandler.observe(this, suscribeTransactions)
     }
 
 }

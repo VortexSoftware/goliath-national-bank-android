@@ -45,7 +45,7 @@
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|end"
             app:srcCompat="@android:drawable/ic_dialog_info"
-            app:backgroundTint="@color/colorPrimaryLight"/>
+            />
 
 
     <LinearLayout
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_anchor="@+id/include"
-            android:background="@color/colorPrimaryLight"
+            android:background="@color/colorAccent"
             app:layout_anchorGravity="bottom"
             android:layout_gravity="center"
             android:gravity="center" android:id="@+id/layoutDownloading">
@@ -61,6 +61,7 @@
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:indeterminateTint="@color/primaryTextColor"
                 android:layout_margin="@dimen/fab_margin"
         />
         <TextView

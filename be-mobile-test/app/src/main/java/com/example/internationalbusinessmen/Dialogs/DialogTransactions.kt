@@ -40,11 +40,4 @@ class DialogTransactions constructor(var route: List<Transaction>) : DialogFragm
 
     }
 
-
-    interface DialogListener {
-        fun onSelectDoneDialog(inputText: String, inputTag: String)
-        fun onCancelDialog(cancelDialog: Unit)
-    }
-
-
 }

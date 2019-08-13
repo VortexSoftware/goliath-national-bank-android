@@ -2,6 +2,7 @@ package com.example.internationalbusinessmen
 
 import androidx.lifecycle.MutableLiveData
 import com.example.internationalbusinessmen.Model.Transaction
+import org.jetbrains.anko.doAsync
 import java.math.BigDecimal
 import kotlin.collections.ArrayList
 
@@ -14,7 +15,7 @@ class TransactionHandler {
 
     constructor()
 
-    fun Refresh(transactionHandler: TransactionHandler){
+    fun Refresh(transactionHandler: TransactionHandler) {
 
         this.transactions.clear()
         this.transactions.addAll(transactionHandler.transactions)
@@ -50,7 +51,33 @@ class TransactionHandler {
     }
 
 
-    fun getTransactionsInRate(itemSku: String, exchange: String,rateConverter: RateConverter){
+    fun getTransactionsInRate(itemSku: String, exchange: String, rateConverter: RateConverter) {
+
+        doAsync {
+            var transactionsFiltered = transactions.filter { it.sku.equals(itemSku) }
+
+            var total = BigDecimal(0)
+
+            for (transaction in transactionsFiltered) {
+
+                total += transaction.amount.multiply(BigDecimal(rateConverter.rate(transaction.currency, exchange)))
+                    .setScale(2, BigDecimal.ROUND_HALF_EVEN)
+
+            }
+
+            transactionsFiltered = transactionsFiltered.plus(
+                Transaction(
+                    "Total",
+                    total,
+                    exchange
+                )
+            )
+
+            liveDataItemSku.postValue(transactionsFiltered)
+        }
+    }
+
+    fun getTransactionsInRateTest(itemSku: String, exchange: String, rateConverter: RateConverter): List<Transaction> {
 
         var transactionsFiltered = transactions.filter { it.sku.equals(itemSku) }
 
@@ -58,7 +85,8 @@ class TransactionHandler {
 
         for (transaction in transactionsFiltered) {
 
-            total += transaction.amount.multiply(BigDecimal(rateConverter.rate(transaction.currency, exchange))).setScale(2, BigDecimal.ROUND_HALF_EVEN)
+            total += transaction.amount.multiply(BigDecimal(rateConverter.rate(transaction.currency, exchange)))
+                .setScale(2, BigDecimal.ROUND_HALF_EVEN)
 
         }
 
@@ -70,9 +98,7 @@ class TransactionHandler {
             )
         )
 
-
-        liveDataItemSku.postValue(transactionsFiltered)
-
+        return transactionsFiltered
     }
 
     fun getTransactionsSize(): Int {

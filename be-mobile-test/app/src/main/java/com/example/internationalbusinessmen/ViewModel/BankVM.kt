@@ -30,9 +30,9 @@ class BankVM(){
 
         this.rateConverter = rateConverter
 
-        rateConverter.genExchanges()
-
         rateConverter.generateRates()
+
+        rateConverter.genExchanges()
 
     }
 

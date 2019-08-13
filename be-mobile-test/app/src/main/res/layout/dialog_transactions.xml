@@ -4,7 +4,7 @@
               android:orientation="vertical"
               android:layout_width="300dp"
               android:layout_height="wrap_content"
-              android:background="@color/colorPrimary"
+              android:background="@color/primaryTextColor"
               android:layout_weight="0"
               android:padding="@dimen/distance"
               android:layout_margin="50dp">
@@ -14,6 +14,7 @@
             style="@style/textTitle"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
             android:id="@+id/textView_sku_title" android:layout_weight="0"/>
 
     <include android:layout_width="match_parent"
@@ -33,7 +34,7 @@
             android:id="@+id/recyclerViewTransactions"/>
     <TextView
             android:layout_marginTop="@dimen/distance"
-
+            android:textColor="@color/colorPrimary"
             tools:text="Total: 541 EUR"
             style="@style/textTitle"
             android:layout_width="match_parent"
@@ -45,5 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/button_close"
+            android:backgroundTint="@color/colorPrimary"
+
             style="@android:style/Widget.Material.Button.Colored"/>
 </LinearLayout>
